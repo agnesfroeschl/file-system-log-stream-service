@@ -1,0 +1,81 @@
+@prefix rr: <http://www.w3.org/ns/r2rml#>.
+@prefix sr: <http://purl.oclc.org/rsp/srml#>.
+@prefix rml: <http://semweb.mmlab.be/ns/rml#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix time: <http://www.w3.org/2006/time#>.
+@prefix schema: <https://schema.org/>.
+@prefix fileSystem: <http://w3id.org/sepses/vocab/fileSystemLog#>.
+@prefix process: <http://w3id.org/sepses/vocab/processInfo#>.
+@prefix : <http://epfl.ch/mapping/>.
+
+
+:LogEntryMap a rr:TriplesMap;
+	rml:logicalSource [
+    	rml:root true;
+    	rml:source "jdbc coso"; ];
+    rr:subjectMap [ rr:template "http://w3id.org/sepses/vocab/fileSystemLog#LogEntry-{id}"];
+  rr:predicateObjectMap [ rr:predicate fileSystem:id; rr:objectMap [ rr:template "{id}" ]];
+  rr:predicateObjectMap [ rr:predicate fileSystem:accessCall; rr:objectMap [ rr:template "{accessCall}" ]];
+  rr:predicateObjectMap [ rr:predicate fileSystem:timestamp;  rr:objectMap [ rr:template "\"{timestampLog}\"^^xsd:dateTime" ]];
+  rr:predicateObjectMap [ rr:predicate fileSystem:logMessage;  rr:objectMap [ rr:template "{logMessage}" ]];
+  rr:predicateObjectMap [ rr:predicate fileSystem:hasLogType;  rr:objectMap
+  	[ rr:template "http://w3id.org/sepses/vocab/fileSystemLog#LogType-{id}"; rr:parentTriplesMap :LogTypeMap ]];
+  rr:predicateObjectMap [ rr:predicate fileSystem:hasUser;  rr:objectMap
+  	[ rr:template "http://w3id.org/sepses/vocab/fileSystemLog#User-{id}"; rr:parentTriplesMap :UserMap ]];
+  rr:predicateObjectMap [ rr:predicate fileSystem:hasProcess;  rr:objectMap
+  	[ rr:template "http://w3id.org/sepses/vocab/fileSystemLog#Process-{id}"; rr:parentTriplesMap :ProcessMap ]];
+  rr:predicateObjectMap [ rr:predicate fileSystem:hasFile;  rr:objectMap
+  	[ rr:template "http://w3id.org/sepses/vocab/fileSystemLog#File-{id}"; rr:parentTriplesMap :FileMap ]];
+  rr:predicateObjectMap [ rr:predicate fileSystem:originatesFrom;  rr:objectMap
+  	[ rr:template "http://w3id.org/sepses/vocab/fileSystemLog#Host-{id}"; rr:parentTriplesMap :HostMap ]].
+
+ :LogTypeMap a rr:TriplesMap;
+ 	rml:logicalSource [
+   	 	rml:root true;
+    	rml:source "jdbc coso"; ];
+ 	rr:subjectMap [ rr:template "http://w3id.org/sepses/vocab/fileSystemLog#LogType-{id}"];
+ rr:predicateObjectMap [ rr:predicate fileSystem:logTypeName; rr:objectMap [ rr:template "{logTypeName}" ]].
+
+ :UserMap a rr:TriplesMap;
+ 	rml:logicalSource [
+   	 	rml:root true;
+    	rml:source "jdbc coso"; ];
+ 	rr:subjectMap [ rr:template "http://w3id.org/sepses/vocab/fileSystemLog#User-{id}"];
+ rr:predicateObjectMap [ rr:predicate fileSystem:domain; rr:objectMap [ rr:constant "_:n1" ]];
+ rr:predicateObjectMap [ rr:predicate fileSystem:username; rr:objectMap [ rr:template "{username}" ]].
+
+ :ProcessMap a rr:TriplesMap;
+ 	rml:logicalSource [
+   	 	rml:root true;
+    	rml:source "jdbc coso"; ];
+ 	rr:subjectMap [ rr:template "http://w3id.org/sepses/vocab/fileSystemLog#Process-{id}"];
+ rr:predicateObjectMap [ rr:predicate fileSystem:processID; rr:objectMap [ rr:template "{pid}" ]];
+ rr:predicateObjectMap [ rr:predicate fileSystem:processname; rr:objectMap [ rr:constant "_:n2" ]].
+
+ :FileMap a rr:TriplesMap;
+ 	rml:logicalSource [
+   	 	rml:root true;
+    	rml:source "jdbc coso"; ];
+ 	rr:subjectMap [ rr:template "http://w3id.org/sepses/vocab/fileSystemLog#File-{id}"];
+ rr:predicateObjectMap [ rr:predicate fileSystem:fileType; rr:objectMap [ rr:template "{fileType}" ]];
+ rr:predicateObjectMap [ rr:predicate fileSystem:pathnameSource; rr:objectMap [ rr:template "{pathnameSource}" ]];
+ rr:predicateObjectMap [ rr:predicate fileSystem:pathnameTarget; rr:objectMap [ rr:template "{pathnameTarget}" ]];
+ rr:predicateObjectMap [ rr:predicate fileSystem:lastDirTarget; rr:objectMap [ rr:template "{lastDirTarget}" ]];
+ rr:predicateObjectMap [ rr:predicate fileSystem:originalFilename; rr:objectMap [ rr:template "{originalFilename}" ]];
+ rr:predicateObjectMap [ rr:predicate fileSystem:originalPathname; rr:objectMap [ rr:template "{originalPathname}" ]];
+ rr:predicateObjectMap [ rr:predicate fileSystem:fileSource; rr:objectMap [ rr:template "{fileSource}" ]];
+ rr:predicateObjectMap [ rr:predicate fileSystem:fileTarget; rr:objectMap [ rr:template "{fileTarget}" ]];
+ rr:predicateObjectMap [ rr:predicate fileSystem:dirSource; rr:objectMap [ rr:template "{dirSource}" ]];
+ rr:predicateObjectMap [ rr:predicate fileSystem:dirTarget; rr:objectMap [ rr:template "{dirTarget}" ]].
+
+ :HostMap a rr:TriplesMap;
+ 	rml:logicalSource [
+   	 	rml:root true;
+    	rml:source "jdbc coso"; ];
+ 	rr:subjectMap [ rr:template "http://w3id.org/sepses/vocab/fileSystemLog#Host-{id}"];
+ rr:predicateObjectMap [ rr:predicate fileSystem:ipAddress; rr:objectMap [ rr:constant "{ip}" ]];
+ rr:predicateObjectMap [ rr:predicate fileSystem:ip4Address; rr:objectMap [ rr:constant "_:n5" ]];
+ rr:predicateObjectMap [ rr:predicate fileSystem:ip6Address; rr:objectMap [ rr:constant "_:n6" ]];
+ rr:predicateObjectMap [ rr:predicate fileSystem:hostName; rr:objectMap [ rr:template "{hostName}" ]].
