@@ -1,6 +1,6 @@
 package ac.at.tuwien.logservice.controller.transfer;
 
-import ac.at.tuwien.logparser.services.util.ServiceUtil;
+import ac.at.tuwien.logservice.services.util.ServiceUtil;
 import org.apache.commons.httpclient.util.DateParseException;
 
 import java.util.Date;

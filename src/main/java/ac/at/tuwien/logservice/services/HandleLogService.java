@@ -17,20 +17,10 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class HandleLogService {
 
-    private static String ipExternal;
-    private static String hostName;
-    private static Map<String, String> userMap;
-    private static final String SERVER_IP = "localhost";
-    private static final String SERVER_PORT = "9000";
     private static final String TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
     @Autowired
     private LogConverterService logConverterService;
-
-    @Autowired
-    public HandleLogService() {
-        userMap = new HashMap<>();
-    }
 
     public void handleRDFTable(RDFTable table) {
         Iterator var4 = table.iterator();
@@ -93,31 +83,5 @@ public class HandleLogService {
             RDFTuple t = (RDFTuple) var4.next();
             logConverterService.saveLogEntryRDFTuple(t);
         }
-    }
-
-    public static void setIpExternal(String ipExternal) {
-        HandleLogService.ipExternal = ipExternal;
-    }
-
-    public static String getIpExternal() {
-        return ipExternal;
-    }
-
-    public static void setHostName(String hostname) {
-        HandleLogService.hostName = hostname;
-    }
-
-    public static String getHostName() {
-        return hostName;
-    }
-
-    public static Map<String, String> getUserMap() {
-        return userMap;
-    }
-
-    public static void addUserToMap(String id, String username) {
-        if (userMap == null)
-            userMap = new HashMap<>();
-        HandleLogService.userMap.put(id, username);
     }
 }

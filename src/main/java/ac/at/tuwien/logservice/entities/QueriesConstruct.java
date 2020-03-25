@@ -809,9 +809,9 @@ public final class QueriesConstruct {
             "  ?program    a fae:Program;" +
             "                fae:pid        ?pid.  " +
             "  ?sourceFile a fae:File; " +
-            "                fae:pathName   ?originalPathname; " +
-            "                fae:fileName   ?originalFilename; " +
-            "                fae:directory  ?dirSourceCreate. "+
+            "                fae:pathName   ?pathnameSourceAccess; " +
+            "                fae:fileName   ?fileSourceAccess; " +
+            "                fae:directory  ?dirSourceAccess. "+
             "  ?targetFile a fae:File; " +
             "                fae:pathName   ?pathnameSourceCreate; " +
             "                fae:fileName   ?fileSourceCreate; " +
@@ -827,8 +827,9 @@ public final class QueriesConstruct {
             " SELECT " +
             "  ?iri ?idAccess ?timestampWithType ?action ?userEvent ?program " +
             "  ?sourceFile ?targetFile ?sourceHost ?targetHost ?hostName" +
-            "  ?actionName ?username ?pid ?originalPathname ?originalFilename " +
-            "  ?dirSourceCreate ?pathnameSourceCreate ?fileSourceCreate " +
+            "  ?actionName ?username ?pid " +
+            "  ?pathnameSourceAccess ?fileSourceAccess ?dirSourceAccess" +
+            "  ?pathnameSourceCreate ?fileSourceCreate ?dirSourceCreate" +
 
             "  WHERE {  " +
 
@@ -853,7 +854,7 @@ public final class QueriesConstruct {
             "   ?logEntryCreate file:timestamp        ?timestampCreate . " +
             "   ?logEntryCreate file:accessCall       ?accessCallCreate . " +
 
-            "   FILTER ( str(?accessCall2) = \"open(2) - write,creat,trunc\" ) . " +
+            "   FILTER ( str(?accessCallCreate) = \"open(2) - write,creat,trunc\" ) . " +
             "   ?logEntryCreate file:hasFile          ?fileCreate . " +
             "   ?fileCreate     file:pathnameSource   ?pathnameSourceCreate .  " +
             "   ?fileCreate     file:fileSource       ?fileSourceCreate .  " +
@@ -889,9 +890,11 @@ public final class QueriesConstruct {
             "GROUP BY " +
             "  ?iri ?idAccess ?timestampWithType ?action ?userEvent ?program " +
             "  ?sourceFile ?targetFile ?sourceHost ?targetHost ?hostName" +
-            "  ?actionName ?username ?pid ?originalPathname ?originalFilename " +
-            "  ?dirSourceCreate ?pathnameSourceCreate ?fileSourceCreate " +
+            "  ?actionName ?username ?pid " +
+            "  ?pathnameSourceAccess ?fileSourceAccess ?dirSourceAccess " +
+            "  ?pathnameSourceCreate ?fileSourceCreate ?dirSourceCreate" +
             "}";
+
 
 
 

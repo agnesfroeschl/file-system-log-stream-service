@@ -8,10 +8,15 @@
 #
  - pipeline.id: log
    path.config: "../logstash-6.3.0/auditpipe.conf"
+ #- pipeline.id: log2
+  # path.config: "../logstash-6.3.0/auditpipe2.conf"
 #   pipeline.workers: 1
 #   pipeline.batch.size: 1
 #   config.string: "input { generator {} } filter { sleep {ls  time => 1 } } output { stdout { codec => dots } }"
-
+ #- pipeline.id: process
+ #  path.config: "../logstash-6.3.0/process.conf"
+ #- pipeline.id: usb
+ #  path.config: "../logstash-6.3.0/usb.conf"
 #   queue.type: persisted
 #
 #
