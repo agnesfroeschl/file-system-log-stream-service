@@ -24,8 +24,16 @@
         > sudo bin/logstash
            
         
-- **Start TripleWave instance for file system logs**
+- **Adapt and start TripleWave instance for file system logs**
 
+    - Download TripleWave from GitHub: https://github.com/streamreasoning/TripleWave
+    - replace following files by our implementation:
+        - 2rml-js/r2rml.js
+        - stream/enricher.js
+    - add files "logstash.r2rml" and "logstashStream.js" into directory /transform (replace by original files)
+        
+    Start a TripleWave instance
+    
         > cd TripleWave-fileSystemLog
         > sh start.sh
         
