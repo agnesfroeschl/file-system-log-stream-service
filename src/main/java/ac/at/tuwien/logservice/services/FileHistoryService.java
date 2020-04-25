@@ -4,7 +4,6 @@ import ac.at.tuwien.logservice.controller.transfer.Element;
 import ac.at.tuwien.logservice.controller.transfer.Node;
 import ac.at.tuwien.logservice.entities.FileAccessEvent;
 import ac.at.tuwien.logservice.entities.Queries;
-import ac.at.tuwien.logservice.entities.schema.File_access_events;
 import ac.at.tuwien.logservice.services.util.ServiceUtil;
 import ac.at.tuwien.logservice.tdb.TDBConnection;
 import com.google.gson.Gson;
@@ -13,54 +12,22 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
 @Slf4j
 public class FileHistoryService {
 
-    private static String time;
     private static TDBConnection tdb;
-    private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     @PostConstruct
     public void init() {
         tdb = new TDBConnection();
-        time = ServiceUtil.getCurrentTimeStamp();
     }
 
     @Scheduled(fixedDelay = 60000)
     public void processCache() {
-        System.out.println("################################### SCHEDULED TASK - " + new Date(System.currentTimeMillis()) + " #########################################");
-
-        String tempTime = time;
-        try {
-            Date tempDate = SIMPLE_DATE_FORMAT.parse(tempTime);
-            Date tempCopyTime = new Date(tempDate.getTime() - 5 * 60 * 1000); //substract 2 min
-            String tempCopyDateString = SIMPLE_DATE_FORMAT.format(tempCopyTime);
-        } catch (ParseException e) {
-            log.error(e.getMessage());
-        }
-
-        System.out.println("Construct relatedTo property");
         tdb.saveRelatedTo(Queries.constructRelatedTo());
-
-        //TODO use this method in live streaming examples to get only filenames from last time range, since last scheduling task
-        //List<String> pathNames = this.getAllFilenamesOfFileAccessEvents(tempTime); // get pathnames in last timestamp range since last scheduling task
-        List<String> pathNames = this.getAllFilenamesOfFileAccessEvents();
-        for (String name : pathNames) {
-            if (name.contains(".tmp")) continue; //skip temp files
-            System.out.println("--------- Result of file with name: \"" + name + "\""); ///Users/Agnes/Desktop/test/excel.xlsx
-            tdb.execQueryAndPrint(Queries.getRelatedEvents(name), "tdb/DB_FileAccessEvent");
-        }
-
-        // set time again
-        Date now = new Date();
-        // Date temp = new Date(now.getTime() - 2 * 60 * 60 * 1000); //substract 2 h
-        //Date temp = new Date(now.getTime() - 5 * 60 * 1000); //substract 2 min
-        time = SIMPLE_DATE_FORMAT.format(now);
     }
 
 
@@ -81,19 +48,10 @@ public class FileHistoryService {
 
         List<Node> nodes = new ArrayList<>();
         for (FileAccessEvent eV : events) {
-            /* -- updates event by adding program name -- */
-            String resourceURI = File_access_events.getURI() + eV.getId() + "-Program";
-            String processName = tdb.getProcessNameByPidAndHost(eV.getHasProgram().getPid(),
-                    ServiceUtil.getTimestampFromXSDDate(eV.getTimestamp()), eV.getHasSourceHost().getHostname());
-            tdb.updateProgramNamOfFileAccessEventResource(resourceURI, processName);
-            if (eV.getHasProgram().getProgramName() == null || (eV.getHasProgram().getProgramName() != null && !eV.getHasProgram().getProgramName().isEmpty())) {
-                eV.getHasProgram().setProgramName(processName);
-            }
-            /* ---- */
 
             nodes.add(this.createNode(ServiceUtil.getTimestampFromXSDDate(eV.getTimestamp()),
                     eV.getHasSourceFile().getPathname(),
-                    eV.getHasAction().getActionName(),
+                    ServiceUtil.getActionNameFromXSDString(eV.getHasAction().getActionName()),
                     eV.getHasTargetFile().getPathname(),
                     eV.getHasProgram().getProgramName(),
                     eV.getHasUser().getUsername(),
@@ -155,16 +113,6 @@ public class FileHistoryService {
         return node;
     }
 
-
-    public List<String> getAllFilenamesOfFileAccessEvents() {
-        tdb = new TDBConnection("tdb/DB_FileAccessEvent");
-        return tdb.getFileNames();
-    }
-
-    public List<String> getAllFilenamesOfFileAccessEvents(String timestamp) {
-        tdb = new TDBConnection("tdb/DB_FileAccessEvent");
-        return tdb.getFileNames(timestamp);
-    }
 
     public List<FileAccessEvent> extractFileAccessEventsFromQueryResult(String sparqlQueryString) {
         tdb = new TDBConnection("tdb/DB_FileAccessEvent");

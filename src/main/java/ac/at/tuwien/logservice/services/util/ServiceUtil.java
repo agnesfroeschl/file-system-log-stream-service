@@ -5,38 +5,19 @@ import ac.at.tuwien.logservice.entities.schema.File_access_events;
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
 import eu.larkc.csparql.common.RDFTuple;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.httpclient.util.DateParseException;
 import org.apache.log4j.Logger;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Slf4j
 public class ServiceUtil {
 
     private final static Logger logger = Logger.getLogger(ServiceUtil.class.getName());
-
-    public static String extractIdFromUrL(String uri) {
-        String id = "";
-        Pattern regex = Pattern.compile("\\b[0-9a-f]{8}\\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\\b[0-9a-f]{12}\\b");
-        Matcher matcher = regex.matcher(uri);
-        while (matcher.find()) {
-            String pattern = matcher.group(0);
-            id = pattern;
-        }
-        return id;
-    }
 
     public static String getCurrentTimeStamp() {
         SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");//dd/MM/yyyy
@@ -45,16 +26,6 @@ public class ServiceUtil {
         return strDate;
     }
 
-    public static String generateMD5DigestCheckSumOfFile(String pathname) throws NoSuchFileException {
-        try (InputStream is = Files.newInputStream(Paths.get(pathname))) {
-            return DigestUtils.md5Hex(is);
-        } catch (IOException e) {
-            //log.warn("error creating md5 checksum of file: " + e.getMessage());
-        } catch (Exception e) {
-            throw new NoSuchFileException("File does not exist: " + e);
-        }
-        return null;
-    }
 
     public static String[] identifyTuple(RDFTuple t, String uuid) {
         String subject = t.get(0);
@@ -221,5 +192,9 @@ public class ServiceUtil {
 
     public static String getTimestampFromXSDDate2(String xsdDate) {
         return xsdDate.split("\\^")[0].split("\"")[1];
+    }
+
+    public static String getActionNameFromXSDString(String xsdActionName) {
+        return xsdActionName.split("\\^")[0].split("\"")[1].split("\\\\")[0];
     }
 }
